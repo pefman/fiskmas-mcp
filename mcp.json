@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "fiskmas": {
+      "type": "streamable-http",
+      "url": "https://mcp.fiskmas.dev/mcp",
+      "headers": {
+        "Authorization": "Bearer <your Fiskmas API token \u2014 the verify page at https://fiskmas.dev shows it once>"
+      }
+    }
+  }
+}
