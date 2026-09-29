@@ -20,7 +20,7 @@
   "tools": [
     {
       "name": "whoami",
-      "description": "Return the identity of the current token holder (account + provider) plus its subscription plan (free | plus) and the plan's limits: max running proj",
+      "description": "Return the identity of the current token holder (account + provider) plus its subscription plan (free | plus) and the plan's limits: max running projects, per-project memory/CPU caps, log windows, and the project-database fair-use guide. Free plans include an upgrade_url for Plus ($9.99/mo: 5 projects, 512 MB / 1 CPU per project, always-on).",
       "inputSchema": {
         "type": "object",
         "properties": {}
@@ -28,7 +28,7 @@
     },
     {
       "name": "create_account",
-      "description": "Start onboarding: require an email, create a pending account, and email a human verify link. Does NOT return an API token. The human must click the li",
+      "description": "Start onboarding: require an email, create a pending account, and email a human verify link. Does NOT return an API token. The human must click the link; the verify page shows the token once. Then configure Authorization: Bearer <token> on this MCP client (also docker login -u <token> registry.fiskmas.dev). If you already have a token, call whoami instead.",
       "inputSchema": {
         "type": "object",
         "properties": {}
@@ -43,8 +43,16 @@
       }
     },
     {
+      "name": "reissue_token",
+      "description": "Re-issue the API token for an existing account. Provide the email the account was registered with; Fiskmås emails a fresh one-time verify link to that address. The human clicks it; the verify page shows the new token once (old tokens are revoked immediately). This is the self-service recovery path when a token was lost, rotated, or is being rejected as \"invalid or expired\". It does not create a new account — for a brand-new account use create_account. Rate-limited: a few requests per hour per email. If you already have a valid token and just want to rotate it, use rotate_token (follows in a later release).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
       "name": "delete_account",
-      "description": "Delete the caller's account. Stops and removes all projects (containers, routes, MariaDB) first, then deletes the account. Refuses to leave orphaned",
+      "description": "Delete the caller's account. Stops and removes all projects (containers, routes, MariaDB) first, then deletes the account. Refuses to leave orphaned runtimes.",
       "inputSchema": {
         "type": "object",
         "properties": {}
@@ -52,7 +60,7 @@
     },
     {
       "name": "create_project",
-      "description": "Create a project and reserve <slug>-app.fiskmas.dev. Slug must match ^[a-z0-9][a-z0-9-]{1,48}$ and is not reserved. Subject to the plan's running-pro",
+      "description": "Create a project and reserve <slug>-app.fiskmas.dev. Slug must match ^[a-z0-9][a-z0-9-]{1,48}$ and is not reserved. Subject to the plan's running-project quota (Free: 1, Plus: 5) — on quota the error tells the human how to upgrade or free a slot.",
       "inputSchema": {
         "type": "object",
         "properties": {}
@@ -100,7 +108,7 @@
     },
     {
       "name": "deploy_project",
-      "description": "Pull an image by digest and run one container with the plan's cpu/memory caps (Free: 128 MB / 0.2 CPU, Plus: 256 MB / 0.5 CPU). Only registry.fiskmas",
+      "description": "Pull an image by digest and run one container with the plan's cpu/memory caps (Free: 256 MB / 0.2 CPU, Plus: 512 MB / 1 CPU). Only registry.fiskmas.dev images are accepted. Rate-limited to 1 deploy per 5 minutes per account (429 with a retry-seconds hint); use restart_project for a transient crash - it does not count against the limit. Re-deploying a running project is always allowed; starting a second one on Free is blocked until one stops.",
       "inputSchema": {
         "type": "object",
         "properties": {}
@@ -140,7 +148,7 @@
     },
     {
       "name": "get_logs",
-      "description": "Return recent container log lines. `tail` = line count (plan default 200; plan max 2000), `since` = time window in seconds (plan window: free 24 h, pl",
+      "description": "Return recent container log lines. `tail` = line count (plan default 200; plan max 2000), `since` = time window in seconds (plan window: free 24 h, plus 7 d — logs are live-pod streams, not stored history). When both are given, `since` wins.",
       "inputSchema": {
         "type": "object",
         "properties": {}
@@ -148,7 +156,7 @@
     },
     {
       "name": "get_stats",
-      "description": "Account-wide or per-project stats for debugging: live CPU/mem vs the plan caps (Free: 128 MB / 0.2 CPU, Plus: 256 MB / 0.5 CPU) and deploy history. Om",
+      "description": "Account-wide or per-project stats for debugging: live CPU/mem vs the plan caps (Free: 256 MB / 0.2 CPU, Plus: 512 MB / 1 CPU) and deploy history. Omit `project` for all of the caller's projects; pass a project id or slug for a single project. The account rollup also reports the plan and per-project caps. With `project` + `since`, also returns `resources.history` — per-project CPU/mem time series over the window (sampled every ~30 s on the k3s platform; absent on stacks without the metrics collector).",
       "inputSchema": {
         "type": "object",
         "properties": {}
@@ -156,7 +164,7 @@
     },
     {
       "name": "send_feedback",
-      "description": "Report a problem with the Fiskm\u00e5s toolset so it can be fixed. Use it when a tool errored or misbehaved, you got stuck and can't proceed, or the",
+      "description": "Report a problem with the Fiskm\u00e5s toolset so it can be fixed. Use it when a tool errored or misbehaved, you got stuck and can't proceed, or the instructions/skill were unclear. Do NOT use it for praise. kind=bug means it broke, kind=suggestion means it was unclear or could be better, kind=other is anything else that didn't work. Name the `tool` and, if relevant, the `project`. At most one call per session.",
       "inputSchema": {
         "type": "object",
         "properties": {}
