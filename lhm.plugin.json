@@ -84,7 +84,7 @@
     },
     {
       "name": "delete_project",
-      "description": "Stop and delete a project (free the slug after quarantine).",
+      "description": "Stop and delete a project. Its slug goes into quarantine for 7 days: you may re-use it immediately, other accounts get a 409 until it is freed.",
       "inputSchema": {
         "type": "object",
         "properties": {}
