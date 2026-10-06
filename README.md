@@ -19,7 +19,7 @@ health-gated rollouts). Pricing and limits are on the landing page.
 | Accounts | `create_account` starts onboarding (email → verify link → one API token); `whoami` returns the identity + plan limits; `reissue_token` recovers a lost/rotated token (one-time email verify link); `delete_account` tears down every project (containers, routes, MariaDB) before deleting the account. |
 | Projects | `create_project` / `list_projects` / `get_project` / `set_env` / `list_env` / `delete_project` (the freed slug stays in quarantine for 7 days: the deleting account may re-use it immediately, other accounts get a 409 until it expires). |
 | Deploys | `deploy_project` pulls an image by digest and runs one container with the plan's CPU/memory caps; `start_project` / `stop_project` / `restart_project` manage the lifecycle. |
-| Observation | `get_status` (status, URL, digest, last deploy error), `get_logs` (recent log lines, plan-windowed), `get_stats` (live CPU/mem vs caps). |
+| Observation | `get_status` (status, URL, digest, last deploy error), `get_logs` (recent log lines, plan-windowed), `get_stats` (live CPU/mem vs caps; with `project` + `since` also a CPU/mem `resources.history` time series). |
 | Knowledge | `list_skills` / `get_skill` serve the platform skill files (the agent onboarding doc). |
 | Feedback | `send_feedback` routes problems back to the platform team. |
 
