@@ -44,7 +44,7 @@
     },
     {
       "name": "reissue_token",
-      "description": "Re-issue the API token for an existing account. Provide the email the account was registered with; Fiskmås emails a fresh one-time verify link to that address. The human clicks it; the verify page shows the new token once (old tokens are revoked immediately). This is the self-service recovery path when a token was lost, rotated, or is being rejected as \"invalid or expired\". It does not create a new account — for a brand-new account use create_account. Rate-limited: a few requests per hour per email. If you already have a valid token and just want to rotate it, use rotate_token (follows in a later release).",
+      "description": "Re-issue the API token for an existing account. Provide the email the account was registered with; Fiskmås emails a fresh one-time verify link to that address. The human clicks it; the verify page shows the new token once (old tokens are revoked immediately). This is the self-service recovery path when a token was lost, rotated, or is being rejected as \"invalid or expired\". It does not create a new account — for a brand-new account use create_account. Rate-limited: a few requests per hour per email.",
       "inputSchema": {
         "type": "object",
         "properties": {}
