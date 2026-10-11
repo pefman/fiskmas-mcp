@@ -92,7 +92,7 @@
     },
     {
       "name": "set_env",
-      "description": "Set environment variables on a project. Requires a restart before they take effect.",
+      "description": "Set environment variables on a project. They take effect on the next deploy_project: a restart does NOT re-apply env.",
       "inputSchema": {
         "type": "object",
         "properties": {}
@@ -116,7 +116,7 @@
     },
     {
       "name": "start_project",
-      "description": "Start a stopped project's container.",
+      "description": "Start a stopped project's container. Waits until it is ready; a pod that fails to become ready returns a named error.",
       "inputSchema": {
         "type": "object",
         "properties": {}
@@ -132,7 +132,7 @@
     },
     {
       "name": "restart_project",
-      "description": "Restart a running project's container.",
+      "description": "Restart a running project's container. Recreates the pod, re-running the injected-DB resolver gate and the app's storage probes, and waits for readiness: a failed start returns a named error (e.g. an unresolvable DB host) and a plain retry usually clears a transient DNS drop. Not rate-limited. Env changes are NOT picked up by a restart - redeploy instead.",
       "inputSchema": {
         "type": "object",
         "properties": {}
