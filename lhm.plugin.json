@@ -92,7 +92,7 @@
     },
     {
       "name": "set_env",
-      "description": "Set environment variables on a project. They take effect on the next deploy_project: a restart does NOT re-apply env.",
+      "description": "Merge environment variables into a project (existing keys are kept). They take effect on the next deploy_project: a restart does NOT re-apply env. The platform-injected DATABASE_URL/MYSQL_* are protected: set_env rejects overriding them and never drops them.",
       "inputSchema": {
         "type": "object",
         "properties": {}
